@@ -1,0 +1,1649 @@
+{
+	"info": {
+		"_postman_id": "ccc2888b-e5d4-4aae-bd7e-dbffb7b0a6f5",
+		"name": "SUMA api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13834775",
+		"_collection_link": "https://andrewjruss7.postman.co/workspace/My-Workspace~0a5762f0-0be7-4c0f-8376-f64ecbd8e245/collection/13834775-ccc2888b-e5d4-4aae-bd7e-dbffb7b0a6f5?action=share&source=collection_link&creator=13834775"
+	},
+	"item": [
+		{
+			"name": "track-events",
+			"item": [
+				{
+					"name": "Track Events",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event_type\": \"login\",\n    \"user_id\": 12,\n    \"user_email\": \"kennitromero@gmail.com\",\n    \"event_data\": \"{\\\"screen\\\": \\\"home\\\"}\"\n}"
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/track-events",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"track-events"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"item": [
+				{
+					"name": "Login Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Verificar propiedades del login', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"    pm.expect(pm.response.json().data).to.have.property('id');",
+									"    pm.expect(pm.response.json().data).to.have.property('email');",
+									"    pm.expect(pm.response.json().data).to.have.property('token');",
+									"})",
+									"",
+									"pm.test('Verificar tipos de datos', function () {",
+									"    pm.expect(pm.response.json().data.id).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.email).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.token).to.be.a('string');",
+									"})",
+									"",
+									"pm.test('Verificar generación de token', function () {",
+									"    var tokenGenerado = pm.response.json().data.token;",
+									"    pm.expect(tokenGenerado).to.not.be.null;",
+									"    pm.expect(tokenGenerado).to.not.be.empty;",
+									"})",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"andrew+28@sumawealth.com\",\n    \"password\": \"/Upp3rR00m\"\n}"
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/login",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar propiedades en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status');",
+									"    pm.expect(pm.response.json()).to.have.property('title');",
+									"    pm.expect(pm.response.json()).to.have.property('detail');",
+									"    pm.expect(pm.response.json()).to.have.property('code');",
+									"});",
+									"",
+									"pm.test(\"Verificar valores específicos en la respuesta\", function () {",
+									"    pm.expect(pm.response.json().status).to.equal(280);",
+									"    pm.expect(pm.response.json().title).to.equal(\"Invalid Credentials\");",
+									"    pm.expect(pm.response.json().detail).to.equal(\"The email or password is wrong.\");",
+									"    pm.expect(pm.response.json().code).to.equal(\"ERROR_CODE_LOGIN_INVALID_CREDENTIALS\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"kennit@sumawealth.com\",\n    \"password\": \"$MarSall42\"\n}"
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/login",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "register",
+			"item": [
+				{
+					"name": "Register Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"var token = jsonData.data.token;",
+									"var tokenEmail = jsonData.data.verificationToken;",
+									"",
+									"pm.globals.set(\"miToken\", token);",
+									"pm.globals.set(\"tokenEmail\", tokenEmail);",
+									"",
+									"pm.test('Verificar propiedades del register', function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"    pm.expect(pm.response.json().data).to.have.property('id');",
+									"    pm.expect(pm.response.json().data).to.have.property('email');",
+									"    pm.expect(pm.response.json().data).to.have.property('token');",
+									"})",
+									"",
+									"pm.test('Verificar tipos de datos', function () {",
+									"    pm.expect(pm.response.json().data.id).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.email).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.token).to.be.a('string');",
+									"})",
+									"",
+									"pm.test('Verificar generación de token', function () {",
+									"    var tokenGenerado = pm.response.json().data.token;",
+									"    pm.expect(tokenGenerado).to.not.be.null;",
+									"    pm.expect(tokenGenerado).to.not.be.empty;",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"andrew+{{$randomBitcoin}}@sumawealth.com\",\n    \"password\": \"/Upp3rR00m\"\n}"
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/register",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar propiedades en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status');",
+									"    pm.expect(pm.response.json()).to.have.property('title');",
+									"    pm.expect(pm.response.json()).to.have.property('detail');",
+									"    pm.expect(pm.response.json()).to.have.property('code');",
+									"});",
+									"",
+									"pm.test(\"Verificar valores específicos en la respuesta\", function () {",
+									"    pm.expect(pm.response.json().status).to.equal(280);",
+									"    pm.expect(pm.response.json().title).to.equal(\"Email used\");",
+									"    pm.expect(pm.response.json().detail).to.equal(\"The email has already been registered.\");",
+									"    pm.expect(pm.response.json().code).to.equal(\"ERROR_CODE_REGISTER_EMAIL_USED\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"kennit@sumawealth.com\",\n    \"password\": \"Suma!2024.\"\n}"
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/register",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "update-user",
+			"item": [
+				{
+					"name": "Update User Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar código de estado 202\", function () {",
+									"    pm.response.to.have.status(202);",
+									"});",
+									"",
+									"pm.test(\"Verificar propiedades en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('message');",
+									"});",
+									"",
+									"pm.test(\"Verificar valor específico en la respuesta\", function () {",
+									"    pm.expect(pm.response.json().message).to.equal(\"User updated successfully\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Andrew\",\n    \"lastname\": \"Test\",\n    \"phone\": \"3002061{{$randomInt}}\"\n}"
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/users",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar propiedades en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status');",
+									"    pm.expect(pm.response.json()).to.have.property('title');",
+									"    pm.expect(pm.response.json()).to.have.property('detail');",
+									"    pm.expect(pm.response.json()).to.have.property('code');",
+									"    pm.expect(pm.response.json()).to.have.property('source');",
+									"});",
+									"",
+									"pm.test(\"Verificar valores específicos en la respuesta\", function () {",
+									"    pm.expect(pm.response.json().status).to.equal(280);",
+									"    pm.expect(pm.response.json().title).to.equal(\"Phone used\");",
+									"    pm.expect(pm.response.json().detail).to.equal(\"The phone number has already been registered.\");",
+									"    pm.expect(pm.response.json().code).to.equal(\"ERROR_CODE_REGISTER_PHONE_USED\");",
+									"    pm.expect(pm.response.json().source.phone).to.equal(\"3002061711\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Andrew\",\n    \"lastname\": \"Test\",\n    \"phone\": \"3002061711\"\n}"
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/users",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "me-before-subs",
+			"item": [
+				{
+					"name": "Me Success Before",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"La propiedad 'data' existe\", function() {",
+									"    pm.expect(jsonData).to.have.property('data');",
+									"});",
+									"",
+									"pm.test(\"El ID es correcto\", function() {",
+									"    pm.expect(jsonData.data.id).to.a(\"string\");",
+									"});",
+									"",
+									"pm.test(\"El email es correcto\", function() {",
+									"    pm.expect(jsonData.data.email).to.a(\"string\");",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'name' existe y es null\", function() {",
+									"    pm.expect(jsonData.data).to.have.property('name');",
+									"    pm.expect(jsonData.data.subscription).to.be.null;",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'lastname' existe y es null\", function() {",
+									"    pm.expect(jsonData.data).to.have.property('lastname');",
+									"    pm.expect(jsonData.data.subscription).to.be.null;",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'phone' existe y es null\", function() {",
+									"    pm.expect(jsonData.data).to.have.property('phone');",
+									"    pm.expect(jsonData.data.subscription).to.be.null;",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'subscription' existe y es null\", function() {",
+									"    pm.expect(jsonData.data).to.have.property('subscription');",
+									"    pm.expect(jsonData.data.subscription).to.be.null;",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'has_any_members' es false\", function() {",
+									"    pm.expect(jsonData.data.has_any_members).to.eql(false);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/me",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me Success Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Body contains 'Session expired'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Session expired\");",
+									"});",
+									"",
+									"pm.test(\"Body contains 'Your session has expired for security reasons, please log in again.'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Your session has expired for security reasons, please log in again.\");",
+									"});",
+									"",
+									"pm.test(\"Body contains 'ERROR_CODE_SESSION_EXPIRED'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"ERROR_CODE_SESSION_EXPIRED\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/me",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "subscription-free-trial",
+			"item": [
+				{
+					"name": "Subscription Free Trial Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar código de estado 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Verificar propiedades en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"    pm.expect(pm.response.json().data).to.have.property('id');",
+									"    pm.expect(pm.response.json().data).to.have.property('email');",
+									"    pm.expect(pm.response.json().data).to.have.property('name');",
+									"    pm.expect(pm.response.json().data).to.have.property('lastname');",
+									"    pm.expect(pm.response.json().data).to.have.property('phone');",
+									"    pm.expect(pm.response.json().data).to.have.property('subscription');",
+									"    pm.expect(pm.response.json().data.subscription).to.have.property('name');",
+									"    pm.expect(pm.response.json().data.subscription).to.have.property('start_date');",
+									"    pm.expect(pm.response.json().data.subscription).to.have.property('end_date');",
+									"    pm.expect(pm.response.json().data.subscription).to.have.property('is_expired');",
+									"    pm.expect(pm.response.json().data.subscription).to.have.property('days');",
+									"    pm.expect(pm.response.json().data).to.have.property('has_any_members');",
+									"});",
+									"",
+									"pm.test(\"Verificar tipos de datos de las propiedades\", function () {",
+									"    pm.expect(pm.response.json().data.id).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.email).to.be.a('string');",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.name).to.satisfy(function (value) {",
+									"        return value === null || typeof value === 'string';",
+									"    });",
+									"    pm.expect(jsonData.data.lastname).to.satisfy(function (value) {",
+									"        return value === null || typeof value === 'string';",
+									"    });",
+									"    pm.expect(jsonData.data.phone).to.satisfy(function (value) {",
+									"        return value === null || typeof value === 'string';",
+									"    });",
+									"    pm.expect(pm.response.json().data.subscription).to.be.an('object');",
+									"    pm.expect(pm.response.json().data.subscription.name).to.be.eql('FREE_TRIAL');",
+									"    pm.expect(pm.response.json().data.subscription.start_date).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.subscription.end_date).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.subscription.is_expired).to.be.false",
+									"    pm.expect(pm.response.json().data.subscription.days).to.be.eql(14);",
+									"    pm.expect(pm.response.json().data.has_any_members).to.be.a('boolean');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/subscriptions/start-free-trial",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subscriptions",
+								"start-free-trial"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Subscription Free Trial Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar propiedades en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('status');",
+									"    pm.expect(pm.response.json()).to.have.property('title');",
+									"    pm.expect(pm.response.json()).to.have.property('detail');",
+									"    pm.expect(pm.response.json()).to.have.property('code');",
+									"});",
+									"",
+									"pm.test(\"Verificar valores específicos en la respuesta\", function () {",
+									"    pm.expect(pm.response.json().status).to.equal(401);",
+									"    pm.expect(pm.response.json().title).to.equal(\"Session expired\");",
+									"    pm.expect(pm.response.json().detail).to.equal(\"Your session has expired for security reasons, please log in again.\");",
+									"    pm.expect(pm.response.json().code).to.equal(\"ERROR_CODE_SESSION_EXPIRED\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJhcGl0ZXN0LnN1bWF3ZWFsdGguaW8iLCJhdWQiOiJ0ZXN0LnN1bWF3ZWFsdGguaW8iLCJpYXQiOjE3MDE4OTM3MDEsImV4cCI6MTcwMTg5NzMwMSwic3ViIjoxMzQsImVtYWlsIjoia2Vubml0MTE2QHN1bWF3ZWFsdGguY29tIn0.Wx05Km1ZcgRatcrS6rG4K8WTTQAfXuZYP-OgxyR-yfg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/subscriptions/start-free-trial",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"subscriptions",
+								"start-free-trial"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "me-after-subs",
+			"item": [
+				{
+					"name": "Me After Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar código de estado 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Verificar propiedades en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"    pm.expect(pm.response.json().data).to.have.property('id');",
+									"    pm.expect(pm.response.json().data).to.have.property('email');",
+									"    pm.expect(pm.response.json().data).to.have.property('name');",
+									"    pm.expect(pm.response.json().data).to.have.property('lastname');",
+									"    pm.expect(pm.response.json().data).to.have.property('phone');",
+									"    pm.expect(pm.response.json().data).to.have.property('subscription');",
+									"    pm.expect(pm.response.json().data.subscription).to.have.property('name');",
+									"    pm.expect(pm.response.json().data.subscription).to.have.property('start_date');",
+									"    pm.expect(pm.response.json().data.subscription).to.have.property('end_date');",
+									"    pm.expect(pm.response.json().data.subscription).to.have.property('is_expired');",
+									"    pm.expect(pm.response.json().data.subscription).to.have.property('days');",
+									"    pm.expect(pm.response.json().data).to.have.property('has_any_members');",
+									"});",
+									"",
+									"pm.test(\"Verificar tipos de datos de las propiedades\", function () {",
+									"    pm.expect(pm.response.json().data.id).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.email).to.be.a('string');",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.data.name).to.satisfy(function (value) {",
+									"        return value === null || typeof value === 'string';",
+									"    });",
+									"    pm.expect(jsonData.data.lastname).to.satisfy(function (value) {",
+									"        return value === null || typeof value === 'string';",
+									"    });",
+									"    pm.expect(jsonData.data.phone).to.satisfy(function (value) {",
+									"        return value === null || typeof value === 'string';",
+									"    });",
+									"    pm.expect(pm.response.json().data.subscription).to.be.an('object');",
+									"    pm.expect(pm.response.json().data.subscription.name).to.be.eql('FREE_TRIAL');",
+									"    pm.expect(pm.response.json().data.subscription.start_date).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.subscription.end_date).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.subscription.is_expired).to.be.false",
+									"    pm.expect(pm.response.json().data.subscription.days).to.be.eql(14);",
+									"    pm.expect(pm.response.json().data.has_any_members).to.be.a('boolean');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/me",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me Success Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 401\", function () {",
+									"    pm.response.to.have.status(401);",
+									"});",
+									"",
+									"pm.test(\"Body contains 'Session expired'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Session expired\");",
+									"});",
+									"",
+									"pm.test(\"Body contains 'Your session has expired for security reasons, please log in again.'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"Your session has expired for security reasons, please log in again.\");",
+									"});",
+									"",
+									"pm.test(\"Body contains 'ERROR_CODE_SESSION_EXPIRED'\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"ERROR_CODE_SESSION_EXPIRED\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/me",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "widget-connections",
+			"item": [
+				{
+					"name": "Widget Connections Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar código de estado 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Verificar propiedades en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"    pm.expect(pm.response.json().data).to.have.property('type');",
+									"    pm.expect(pm.response.json().data).to.have.property('url');",
+									"});",
+									"",
+									"pm.test(\"Verificar tipos de datos de las propiedades\", function () {",
+									"    pm.expect(pm.response.json().data.type).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.url).to.be.a('string');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/widgets/connections",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"widgets",
+								"connections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Widget Connections Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"La propiedad 'status' existe y es 401\", function() {",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"    pm.expect(jsonData.status).to.eql(401);",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'title' existe y tiene el valor correcto\", function() {",
+									"    pm.expect(jsonData).to.have.property('title');",
+									"    pm.expect(jsonData.title).to.eql(\"Session expired\");",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'detail' existe y tiene el valor correcto\", function() {",
+									"    pm.expect(jsonData).to.have.property('detail');",
+									"    pm.expect(jsonData.detail).to.eql(\"Your session has expired for security reasons, please log in again.\");",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'code' existe y tiene el valor correcto\", function() {",
+									"    pm.expect(jsonData).to.have.property('code');",
+									"    pm.expect(jsonData.code).to.eql(\"ERROR_CODE_SESSION_EXPIRED\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/widgets/connections",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"widgets",
+								"connections"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "widget-insights",
+			"item": [
+				{
+					"name": "Widget Insights Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar código de estado 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Verificar propiedades en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"    pm.expect(pm.response.json().data).to.have.property('type');",
+									"    pm.expect(pm.response.json().data).to.have.property('url');",
+									"});",
+									"",
+									"pm.test(\"Verificar tipos de datos de las propiedades\", function () {",
+									"    pm.expect(pm.response.json().data.type).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.url).to.be.a('string');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/widgets/insights",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"widgets",
+								"insights"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Widget Insights Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"La propiedad 'status' existe y es 401\", function() {",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"    pm.expect(jsonData.status).to.eql(401);",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'title' existe y tiene el valor correcto\", function() {",
+									"    pm.expect(jsonData).to.have.property('title');",
+									"    pm.expect(jsonData.title).to.eql(\"Session expired\");",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'detail' existe y tiene el valor correcto\", function() {",
+									"    pm.expect(jsonData).to.have.property('detail');",
+									"    pm.expect(jsonData.detail).to.eql(\"Your session has expired for security reasons, please log in again.\");",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'code' existe y tiene el valor correcto\", function() {",
+									"    pm.expect(jsonData).to.have.property('code');",
+									"    pm.expect(jsonData.code).to.eql(\"ERROR_CODE_SESSION_EXPIRED\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/widgets/insights",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"widgets",
+								"insights"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "widget-budget",
+			"item": [
+				{
+					"name": "Widget Budget Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar código de estado 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Verificar propiedades en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"    pm.expect(pm.response.json().data).to.have.property('type');",
+									"    pm.expect(pm.response.json().data).to.have.property('url');",
+									"});",
+									"",
+									"pm.test(\"Verificar tipos de datos de las propiedades\", function () {",
+									"    pm.expect(pm.response.json().data.type).to.be.a('string');",
+									"    pm.expect(pm.response.json().data.url).to.be.a('string');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/widgets/budget",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"widgets",
+								"budget"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Widget Budget Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"pm.test(\"La propiedad 'status' existe y es 401\", function() {",
+									"    pm.expect(jsonData).to.have.property('status');",
+									"    pm.expect(jsonData.status).to.eql(401);",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'title' existe y tiene el valor correcto\", function() {",
+									"    pm.expect(jsonData).to.have.property('title');",
+									"    pm.expect(jsonData.title).to.eql(\"Session expired\");",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'detail' existe y tiene el valor correcto\", function() {",
+									"    pm.expect(jsonData).to.have.property('detail');",
+									"    pm.expect(jsonData.detail).to.eql(\"Your session has expired for security reasons, please log in again.\");",
+									"});",
+									"",
+									"pm.test(\"La propiedad 'code' existe y tiene el valor correcto\", function() {",
+									"    pm.expect(jsonData).to.have.property('code');",
+									"    pm.expect(jsonData.code).to.eql(\"ERROR_CODE_SESSION_EXPIRED\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/widgets/budget",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"widgets",
+								"budget"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "synchronize-attach",
+			"item": [
+				{
+					"name": "Synchronize Attach Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar código de estado 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"member_guid\": \"MBR-0e4bd643-2987-4615-b101-e5a9a7cfec3b\"\n}"
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/synchronize/attach",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"synchronize",
+								"attach"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "expenses",
+			"item": [
+				{
+					"name": "Expenses Success",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar código de estado 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Verificar propiedades principales en la respuesta\", function () {",
+									"    pm.expect(pm.response.json()).to.have.property('data');",
+									"    pm.expect(pm.response.json().data).to.have.property('1');",
+									"    pm.expect(pm.response.json().data).to.have.property('userId');",
+									"    pm.expect(pm.response.json().data).to.have.property('balance');",
+									"    pm.expect(pm.response.json().data).to.have.property('Emergency Funds Time');",
+									"    pm.expect(pm.response.json().data).to.have.property('index');",
+									"    pm.expect(pm.response.json().data).to.have.property('needs');",
+									"    pm.expect(pm.response.json().data).to.have.property('transactions');",
+									"    pm.expect(pm.response.json().data).to.have.property('transactions_60');",
+									"    pm.expect(pm.response.json().data).to.have.property('transactions_7');",
+									"    pm.expect(pm.response.json().data).to.have.property('transactions_lastlastmonth');",
+									"    pm.expect(pm.response.json().data).to.have.property('transactions_lastmonth');",
+									"    pm.expect(pm.response.json().data).to.have.property('transactions_thismonth');",
+									"});",
+									"",
+									"pm.test(\"Verificar tipos de datos y valores en propiedades principales\", function () {",
+									"    pm.expect(pm.response.json().data['1']).to.equal(\"1\");",
+									"    pm.expect(pm.response.json().data.userId).to.be.a('object');",
+									"    pm.expect(pm.response.json().data.balance).to.be.a('number');",
+									"    pm.expect(pm.response.json().data['Emergency Funds Time']).to.be.a('{}'); // Por ajustar... ",
+									"    pm.expect(pm.response.json().data.index).to.be.a('number');",
+									"    pm.expect(pm.response.json().data.needs).to.be.a('number');",
+									"});",
+									"",
+									"pm.test(\"Verificar propiedades dentro de 'transactions'\", function () {",
+									"    pm.expect(pm.response.json().data.transactions).to.have.property('Income');",
+									"    pm.expect(pm.response.json().data.transactions).to.have.property('Needs');",
+									"    pm.expect(pm.response.json().data.transactions).to.have.property('Others');",
+									"    pm.expect(pm.response.json().data.transactions).to.have.property('Subscriptions');",
+									"    pm.expect(pm.response.json().data.transactions).to.have.property('Total');",
+									"    pm.expect(pm.response.json().data.transactions).to.have.property('Wants');",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}/api/v1/expenses",
+							"host": [
+								"{{SUMA_API}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Expenses Fail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verificar código de estado 280\", function () {",
+									"    pm.response.to.have.status(280);",
+									"});",
+									"",
+									"pm.test(\"Verificar propiedades y valores en la respuesta\", function () {",
+									"    const response = pm.response.json();",
+									"",
+									"    pm.expect(response).to.have.property('status');",
+									"    pm.expect(response.status).to.equal(280);",
+									"",
+									"    pm.expect(response).to.have.property('title');",
+									"    pm.expect(response.title).to.equal(\"No Found Expenses\");",
+									"",
+									"    pm.expect(response).to.have.property('detail');",
+									"    pm.expect(response.detail).to.equal(\"User does not have any expenses.\");",
+									"",
+									"    pm.expect(response).to.have.property('code');",
+									"    pm.expect(response.code).to.equal(\"ERROR_CODE_NO_FOUND_EXPENSES\");",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{miToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SUMA_API}}api/v1/expenses",
+							"host": [
+								"{{SUMA_API}}api"
+							],
+							"path": [
+								"v1",
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete User",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{miToken}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \n}"
+				},
+				"url": {
+					"raw": "{{SUMA_API}}/api/v1/users",
+					"host": [
+						"{{SUMA_API}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Email Verification",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SUMA_API}}/api/v1/verify-email/{{tokenEmail}}",
+					"host": [
+						"{{SUMA_API}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"verify-email",
+						"{{tokenEmail}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
